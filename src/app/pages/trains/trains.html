@@ -1,0 +1,302 @@
+<!-- Page Header -->
+<div class="page-header">
+  <div class="container">
+    <h1>Train Tickets</h1>
+    <p>Search and book train tickets for your journey</p>
+  </div>
+</div>
+
+<!-- Search Section -->
+<div class="container">
+  <div class="search-card">
+    <div class="search-form">
+      <div class="row">
+        <div class="col">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>From</mat-label>
+            <input matInput placeholder="Enter origin station" [(ngModel)]="searchFilters.origin">
+            <mat-icon matSuffix>location_on</mat-icon>
+          </mat-form-field>
+        </div>
+        <div class="col">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>To</mat-label>
+            <input matInput placeholder="Enter destination station" [(ngModel)]="searchFilters.destination">
+            <mat-icon matSuffix>location_on</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Departure Date</mat-label>
+            <input matInput [matDatepicker]="departurePicker" [(ngModel)]="searchFilters.departDate">
+            <mat-datepicker-toggle matSuffix [for]="departurePicker"></mat-datepicker-toggle>
+            <mat-datepicker #departurePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Return Date (Optional)</mat-label>
+            <input matInput [matDatepicker]="returnPicker" [(ngModel)]="searchFilters.returnDate">
+            <mat-datepicker-toggle matSuffix [for]="returnPicker"></mat-datepicker-toggle>
+            <mat-datepicker #returnPicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Passengers</mat-label>
+            <input matInput [value]="getTotalPassengers() + ' Passenger(s)'" readonly>
+            <mat-icon matSuffix>person</mat-icon>
+          </mat-form-field>
+          <div class="passenger-dropdown">
+            <div class="passenger-type">
+              <span>Adults</span>
+              <div class="passenger-controls">
+                <button mat-icon-button [disabled]="searchFilters.passengers.adults <= 1" (click)="searchFilters.passengers.adults = searchFilters.passengers.adults - 1">
+                  <mat-icon>remove</mat-icon>
+                </button>
+                <span>{{searchFilters.passengers.adults}}</span>
+                <button mat-icon-button (click)="searchFilters.passengers.adults = searchFilters.passengers.adults + 1">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+            </div>
+            <div class="passenger-type">
+              <span>Children</span>
+              <div class="passenger-controls">
+                <button mat-icon-button [disabled]="searchFilters.passengers.children <= 0" (click)="searchFilters.passengers.children = searchFilters.passengers.children - 1">
+                  <mat-icon>remove</mat-icon>
+                </button>
+                <span>{{searchFilters.passengers.children}}</span>
+                <button mat-icon-button (click)="searchFilters.passengers.children = searchFilters.passengers.children + 1">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+            </div>
+            <div class="passenger-type">
+              <span>Infants</span>
+              <div class="passenger-controls">
+                <button mat-icon-button [disabled]="searchFilters.passengers.infants <= 0" (click)="searchFilters.passengers.infants = searchFilters.passengers.infants - 1">
+                  <mat-icon>remove</mat-icon>
+                </button>
+                <span>{{searchFilters.passengers.infants}}</span>
+                <button mat-icon-button (click)="searchFilters.passengers.infants = searchFilters.passengers.infants + 1">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Class</mat-label>
+            <mat-select [(ngModel)]="searchFilters.trainClass">
+              <mat-option value="any">Any Class</mat-option>
+              <mat-option value="first">First Class</mat-option>
+              <mat-option value="second">Second Class</mat-option>
+              <mat-option value="business">Business Class</mat-option>
+              <mat-option value="sleeper">Sleeper Class</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      
+      <div class="search-button">
+        <button mat-raised-button color="primary" (click)="applyFilters()">
+          <mat-icon>search</mat-icon> Search Trains
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Popular Routes Section -->
+<div class="container">
+  <div class="section-title">
+    <h2>Popular Train Routes</h2>
+    <p>Explore these popular train journeys with great deals</p>
+  </div>
+  
+  <div class="popular-routes">
+    <div class="route-card" *ngFor="let route of popularRoutes" (click)="selectRoute(route)">
+      <div class="route-image" [style.background-image]="'url(' + route.image + ')'">
+        <div class="route-overlay">
+          <div class="route-info">
+            <h3>{{route.origin}} to {{route.destination}}</h3>
+            <p class="route-price">From ${{route.price}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Train Results Section -->
+<div class="container" *ngIf="filteredTrains.length > 0">
+  <div class="results-container">
+    <!-- Filters Sidebar -->
+    <div class="filters-sidebar">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Filter Results</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <!-- Price Range Filter -->
+          <div class="filter-section">
+            <h3>Price Range</h3>
+            <div class="price-range">
+              <span>${{searchFilters.priceRange.min}}</span>
+              <span>${{searchFilters.priceRange.max}}</span>
+            </div>
+            <mat-slider class="full-width" [min]="0" [max]="500" [step]="10">
+              <input matSliderStartThumb [(ngModel)]="searchFilters.priceRange.min" (change)="applyFilters()">
+              <input matSliderEndThumb [(ngModel)]="searchFilters.priceRange.max" (change)="applyFilters()">
+            </mat-slider>
+          </div>
+          
+          <!-- Departure Time Filter -->
+          <div class="filter-section">
+            <h3>Departure Time</h3>
+            <div class="time-filter">
+              <mat-checkbox [(ngModel)]="searchFilters.departureTime.morning" (change)="applyFilters()">
+                Morning (5:00 - 11:59)
+              </mat-checkbox>
+              <mat-checkbox [(ngModel)]="searchFilters.departureTime.afternoon" (change)="applyFilters()">
+                Afternoon (12:00 - 17:59)
+              </mat-checkbox>
+              <mat-checkbox [(ngModel)]="searchFilters.departureTime.evening" (change)="applyFilters()">
+                Evening (18:00 - 23:59)
+              </mat-checkbox>
+              <mat-checkbox [(ngModel)]="searchFilters.departureTime.night" (change)="applyFilters()">
+                Night (0:00 - 4:59)
+              </mat-checkbox>
+            </div>
+          </div>
+          
+          <!-- Train Operators Filter -->
+          <div class="filter-section">
+            <h3>Train Operators</h3>
+            <div class="operator-filter">
+              <div class="operator-item" *ngFor="let operator of availableOperators" 
+                   [class.selected]="isOperatorSelected(operator.code)"
+                   (click)="toggleOperator(operator.code)">
+                <span>{{operator.name}}</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Direct Trains Filter -->
+          <div class="filter-section">
+            <h3>Train Type</h3>
+            <mat-checkbox [(ngModel)]="searchFilters.directTrains" (change)="applyFilters()">
+              Direct Trains Only
+            </mat-checkbox>
+          </div>
+          
+          <!-- Reset Filters -->
+          <div class="reset-filters">
+            <button mat-stroked-button color="primary" (click)="resetFilters()">
+              Reset Filters
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    
+    <!-- Train Listings -->
+    <div class="train-listings">
+      <!-- Sort Options -->
+      <div class="sort-container">
+        <span>Sort by:</span>
+        <mat-form-field appearance="outline">
+          <mat-select [(ngModel)]="selectedSort" (selectionChange)="applyFilters()">
+            <mat-option *ngFor="let option of sortOptions" [value]="option.value">
+              {{option.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      
+      <!-- Train Cards -->
+      <div class="train-cards">
+        <mat-card class="train-card" *ngFor="let train of paginatedTrains">
+          <div class="train-header">
+            <div class="train-operator">
+              <img [src]="train.logo" alt="{{train.operator}} logo" class="operator-logo">
+              <div>
+                <h3>{{train.operator}}</h3>
+                <p class="train-number">{{train.trainNumber}}</p>
+              </div>
+            </div>
+            <div class="train-class">
+              <span class="class-badge" [ngClass]="train.trainClass">
+                {{train.trainClass | titlecase}} Class
+              </span>
+            </div>
+          </div>
+          
+          <div class="train-details">
+            <div class="train-journey">
+              <div class="departure">
+                <h3>{{train.departureTime}}</h3>
+                <p>{{train.origin}}</p>
+                <span class="date">{{train.departureDate}}</span>
+              </div>
+              
+              <div class="journey-line">
+                <div class="duration">{{train.duration}}</div>
+                <div class="line"></div>
+                <div class="stops">
+                  <span *ngIf="train.stops === 0">Direct</span>
+                  <span *ngIf="train.stops > 0">{{train.stops}} stop<span *ngIf="train.stops > 1">s</span></span>
+                </div>
+              </div>
+              
+              <div class="arrival">
+                <h3>{{train.arrivalTime}}</h3>
+                <p>{{train.destination}}</p>
+              </div>
+            </div>
+            
+            <div class="train-amenities">
+              <div class="amenity" *ngFor="let amenity of train.amenities">
+                <mat-icon>check_circle</mat-icon> {{amenity}}
+              </div>
+            </div>
+            
+            <div class="train-booking">
+              <div class="price-info">
+                <span class="price">${{train.price}}</span>
+                <span class="seats">{{train.seatsAvailable}} seats left</span>
+              </div>
+              <button mat-raised-button color="primary">Select</button>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+      
+      <!-- Pagination -->
+      <mat-paginator 
+        [length]="totalItems"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        (page)="onPageChange($event)">
+      </mat-paginator>
+    </div>
+  </div>
+</div>
+
+<!-- No Results Message -->
+<div class="container" *ngIf="filteredTrains.length === 0 && trains.length > 0">
+  <div class="no-results">
+    <mat-icon>search_off</mat-icon>
+    <h2>No trains found</h2>
+    <p>Try adjusting your search filters to find more options</p>
+    <button mat-raised-button color="primary" (click)="resetFilters()">Reset Filters</button>
+  </div>
+</div>

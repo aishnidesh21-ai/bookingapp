@@ -1,0 +1,519 @@
+<!-- Flights Page Header -->
+<section class="page-header">
+  <div class="container">
+    <h1 class="display-4">Find & Book Flights</h1>
+    <p class="lead">Search for the best deals on flights worldwide</p>
+  </div>
+</section>
+
+<!-- Main Content -->
+<div class="container mt-4">
+  <!-- Flight Search Form -->
+  <mat-card class="search-card mb-5">
+    <mat-card-content>
+      <!-- Trip Type Tabs -->
+      <mat-tab-group [selectedIndex]="searchFilters.tripType === 'roundtrip' ? 0 : searchFilters.tripType === 'oneway' ? 1 : 2" 
+                    (selectedIndexChange)="searchFilters.tripType = $event === 0 ? 'roundtrip' : $event === 1 ? 'oneway' : 'multicity'">
+        <mat-tab label="Round Trip">
+          <div class="search-form p-3">
+            <div class="row">
+              <!-- Origin -->
+              <div class="col-md-6 mb-3">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>From</mat-label>
+                  <input matInput [(ngModel)]="searchFilters.origin" placeholder="City or Airport">
+                  <mat-icon matSuffix>flight_takeoff</mat-icon>
+                </mat-form-field>
+              </div>
+              
+              <!-- Destination -->
+              <div class="col-md-6 mb-3">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>To</mat-label>
+                  <input matInput [(ngModel)]="searchFilters.destination" placeholder="City or Airport">
+                  <mat-icon matSuffix>flight_land</mat-icon>
+                </mat-form-field>
+              </div>
+              
+              <!-- Dates -->
+              <div class="col-md-3 mb-3">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Departure</mat-label>
+                  <input matInput [matDatepicker]="departurePicker" [(ngModel)]="searchFilters.departDate">
+                  <mat-datepicker-toggle matSuffix [for]="departurePicker"></mat-datepicker-toggle>
+                  <mat-datepicker #departurePicker></mat-datepicker>
+                </mat-form-field>
+              </div>
+              
+              <div class="col-md-3 mb-3">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Return</mat-label>
+                  <input matInput [matDatepicker]="returnPicker" [(ngModel)]="searchFilters.returnDate">
+                  <mat-datepicker-toggle matSuffix [for]="returnPicker"></mat-datepicker-toggle>
+                  <mat-datepicker #returnPicker></mat-datepicker>
+                </mat-form-field>
+              </div>
+              
+              <!-- Passengers -->
+              <div class="col-md-3 mb-3">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Passengers</mat-label>
+                  <mat-select [value]="getTotalPassengers()">
+                    <mat-select-trigger>
+                      {{getTotalPassengers()}} Passenger(s)
+                    </mat-select-trigger>
+                    <div class="passenger-select p-3">
+                      <div class="passenger-type mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <div>
+                            <h6 class="mb-0">Adults</h6>
+                            <small class="text-muted">12+ years</small>
+                          </div>
+                          <div class="passenger-counter">
+                            <button mat-icon-button [disabled]="searchFilters.passengers.adults <= 1" (click)="searchFilters.passengers.adults = searchFilters.passengers.adults - 1">
+                              <mat-icon>remove</mat-icon>
+                            </button>
+                            <span class="mx-2">{{searchFilters.passengers.adults}}</span>
+                            <button mat-icon-button [disabled]="searchFilters.passengers.adults >= 9" (click)="searchFilters.passengers.adults = searchFilters.passengers.adults + 1">
+                              <mat-icon>add</mat-icon>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="passenger-type mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <div>
+                            <h6 class="mb-0">Children</h6>
+                            <small class="text-muted">2-11 years</small>
+                          </div>
+                          <div class="passenger-counter">
+                            <button mat-icon-button [disabled]="searchFilters.passengers.children <= 0" (click)="searchFilters.passengers.children = searchFilters.passengers.children - 1">
+                              <mat-icon>remove</mat-icon>
+                            </button>
+                            <span class="mx-2">{{searchFilters.passengers.children}}</span>
+                            <button mat-icon-button [disabled]="searchFilters.passengers.children >= 9" (click)="searchFilters.passengers.children = searchFilters.passengers.children + 1">
+                              <mat-icon>add</mat-icon>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="passenger-type">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <div>
+                            <h6 class="mb-0">Infants</h6>
+                            <small class="text-muted">0-23 months</small>
+                          </div>
+                          <div class="passenger-counter">
+                            <button mat-icon-button [disabled]="searchFilters.passengers.infants <= 0" (click)="searchFilters.passengers.infants = searchFilters.passengers.infants - 1">
+                              <mat-icon>remove</mat-icon>
+                            </button>
+                            <span class="mx-2">{{searchFilters.passengers.infants}}</span>
+                            <button mat-icon-button [disabled]="searchFilters.passengers.infants >= searchFilters.passengers.adults" (click)="searchFilters.passengers.infants = searchFilters.passengers.infants + 1">
+                              <mat-icon>add</mat-icon>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              
+              <!-- Cabin Class -->
+              <div class="col-md-3 mb-3">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Cabin Class</mat-label>
+                  <mat-select [(ngModel)]="searchFilters.cabinClass">
+                    <mat-option value="economy">Economy</mat-option>
+                    <mat-option value="premium">Premium Economy</mat-option>
+                    <mat-option value="business">Business</mat-option>
+                    <mat-option value="first">First Class</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              
+              <!-- Search Button -->
+              <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                  <mat-checkbox [(ngModel)]="searchFilters.directFlights" color="primary">Direct flights only</mat-checkbox>
+                  <button mat-raised-button color="primary" class="search-btn" (click)="applyFilters()">
+                    <mat-icon>search</mat-icon> Search Flights
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+        
+        <mat-tab label="One Way">
+          <div class="search-form p-3">
+            <div class="row">
+              <!-- Origin -->
+              <div class="col-md-6 mb-3">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>From</mat-label>
+                  <input matInput [(ngModel)]="searchFilters.origin" placeholder="City or Airport">
+                  <mat-icon matSuffix>flight_takeoff</mat-icon>
+                </mat-form-field>
+              </div>
+              
+              <!-- Destination -->
+              <div class="col-md-6 mb-3">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>To</mat-label>
+                  <input matInput [(ngModel)]="searchFilters.destination" placeholder="City or Airport">
+                  <mat-icon matSuffix>flight_land</mat-icon>
+                </mat-form-field>
+              </div>
+              
+              <!-- Date -->
+              <div class="col-md-6 mb-3">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Departure</mat-label>
+                  <input matInput [matDatepicker]="departurePicker2" [(ngModel)]="searchFilters.departDate">
+                  <mat-datepicker-toggle matSuffix [for]="departurePicker2"></mat-datepicker-toggle>
+                  <mat-datepicker #departurePicker2></mat-datepicker>
+                </mat-form-field>
+              </div>
+              
+              <!-- Passengers & Cabin Class -->
+              <div class="col-md-3 mb-3">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Passengers</mat-label>
+                  <mat-select [value]="getTotalPassengers()">
+                    <mat-select-trigger>
+                      {{getTotalPassengers()}} Passenger(s)
+                    </mat-select-trigger>
+                    <!-- Passenger selection content same as above -->
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              
+              <div class="col-md-3 mb-3">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Cabin Class</mat-label>
+                  <mat-select [(ngModel)]="searchFilters.cabinClass">
+                    <mat-option value="economy">Economy</mat-option>
+                    <mat-option value="premium">Premium Economy</mat-option>
+                    <mat-option value="business">Business</mat-option>
+                    <mat-option value="first">First Class</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              
+              <!-- Search Button -->
+              <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                  <mat-checkbox [(ngModel)]="searchFilters.directFlights" color="primary">Direct flights only</mat-checkbox>
+                  <button mat-raised-button color="primary" class="search-btn" (click)="applyFilters()">
+                    <mat-icon>search</mat-icon> Search Flights
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+        
+        <mat-tab label="Multi-City">
+          <div class="search-form p-3">
+            <!-- Multi-city trips -->
+            <div *ngFor="let trip of multiCityTrips; let i = index" class="multi-city-trip mb-3">
+              <div class="row">
+                <div class="col-md-5">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>From</mat-label>
+                    <input matInput [(ngModel)]="trip.origin" placeholder="City or Airport">
+                    <mat-icon matSuffix>flight_takeoff</mat-icon>
+                  </mat-form-field>
+                </div>
+                
+                <div class="col-md-5">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>To</mat-label>
+                    <input matInput [(ngModel)]="trip.destination" placeholder="City or Airport">
+                    <mat-icon matSuffix>flight_land</mat-icon>
+                  </mat-form-field>
+                </div>
+                
+                <div class="col-md-2">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Date</mat-label>
+                    <input matInput [matDatepicker]="picker" [(ngModel)]="trip.date">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                  </mat-form-field>
+                </div>
+              </div>
+              
+              <!-- Remove button for trips beyond the minimum 2 -->
+              <button *ngIf="multiCityTrips.length > 2 && i > 0" 
+                      mat-icon-button 
+                      color="warn" 
+                      class="remove-trip-btn"
+                      (click)="removeCity(i)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+            
+            <!-- Add City Button -->
+            <div class="mb-3">
+              <button mat-stroked-button 
+                      color="primary" 
+                      [disabled]="multiCityTrips.length >= 5"
+                      (click)="addCity()">
+                <mat-icon>add</mat-icon> Add City
+              </button>
+              <small class="text-muted ms-2" *ngIf="multiCityTrips.length >= 5">Maximum 5 cities allowed</small>
+            </div>
+            
+            <!-- Passengers & Cabin Class -->
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Passengers</mat-label>
+                  <mat-select [value]="getTotalPassengers()">
+                    <mat-select-trigger>
+                      {{getTotalPassengers()}} Passenger(s)
+                    </mat-select-trigger>
+                    <!-- Passenger selection content same as above -->
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              
+              <div class="col-md-6">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Cabin Class</mat-label>
+                  <mat-select [(ngModel)]="searchFilters.cabinClass">
+                    <mat-option value="economy">Economy</mat-option>
+                    <mat-option value="premium">Premium Economy</mat-option>
+                    <mat-option value="business">Business</mat-option>
+                    <mat-option value="first">First Class</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            
+            <!-- Search Button -->
+            <div class="d-flex justify-content-between align-items-center">
+              <mat-checkbox [(ngModel)]="searchFilters.directFlights" color="primary">Direct flights only</mat-checkbox>
+              <button mat-raised-button color="primary" class="search-btn" (click)="applyFilters()">
+                <mat-icon>search</mat-icon> Search Flights
+              </button>
+            </div>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+  
+  <!-- Popular Destinations -->
+  <section class="popular-destinations mb-5">
+    <h2 class="section-title">Popular Destinations</h2>
+    <div class="row">
+      <div class="col-md-4 col-lg-2-4" *ngFor="let destination of popularDestinations">
+        <div class="destination-card" (click)="selectDestination(destination)">
+          <div class="destination-img" [style.background-image]="'url(' + destination.image + ')'">
+            <div class="destination-overlay">
+              <h3>{{destination.city}}</h3>
+              <p>{{destination.country}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Flight Results -->
+  <div class="row" *ngIf="filteredFlights.length > 0">
+    <div class="col-md-3">
+      <!-- Filters Sidebar -->
+      <mat-card class="filter-card">
+        <mat-card-header>
+          <mat-card-title>Filter Results</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <!-- Price Range -->
+          <div class="mb-4">
+            <h6>Price Range</h6>
+            <div class="d-flex justify-content-between mb-2">
+              <span>${{searchFilters.priceRange.min}}</span>
+              <span>${{searchFilters.priceRange.max}}</span>
+            </div>
+            <mat-slider class="w-100" [min]="0" [max]="2000" [step]="50">
+              <input matSliderStartThumb [(ngModel)]="searchFilters.priceRange.min" name="minPrice">
+              <input matSliderEndThumb [(ngModel)]="searchFilters.priceRange.max" name="maxPrice">
+            </mat-slider>
+          </div>
+          
+          <!-- Stops -->
+          <div class="mb-4">
+            <h6>Stops</h6>
+            <div class="stops-filter">
+              <mat-radio-group [(ngModel)]="searchFilters.directFlights">
+                <mat-radio-button [value]="false" color="primary">Any</mat-radio-button>
+                <mat-radio-button [value]="true" color="primary">Direct flights only</mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </div>
+          
+          <!-- Airlines -->
+          <div class="mb-4">
+            <h6>Airlines</h6>
+            <div class="airlines-filter">
+              <mat-checkbox *ngFor="let airline of availableAirlines" 
+                           [checked]="isAirlineSelected(airline.code)"
+                           (change)="toggleAirline(airline.code)"
+                           color="primary">
+                {{airline.name}}
+              </mat-checkbox>
+            </div>
+          </div>
+          
+          <!-- Departure Times -->
+          <div class="mb-4">
+            <h6>Departure Times</h6>
+            <div class="time-filter">
+              <mat-checkbox [(ngModel)]="searchFilters.departureTime.morning" color="primary">
+                Morning (5:00 AM - 11:59 AM)
+              </mat-checkbox>
+              <mat-checkbox [(ngModel)]="searchFilters.departureTime.afternoon" color="primary">
+                Afternoon (12:00 PM - 5:59 PM)
+              </mat-checkbox>
+              <mat-checkbox [(ngModel)]="searchFilters.departureTime.evening" color="primary">
+                Evening (6:00 PM - 11:59 PM)
+              </mat-checkbox>
+              <mat-checkbox [(ngModel)]="searchFilters.departureTime.night" color="primary">
+                Night (12:00 AM - 4:59 AM)
+              </mat-checkbox>
+            </div>
+          </div>
+          
+          <!-- Filter Buttons -->
+          <div class="d-grid gap-2">
+            <button mat-raised-button color="primary" (click)="applyFilters()">Apply Filters</button>
+            <button mat-stroked-button type="button" (click)="resetFilters()">Reset Filters</button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    
+    <div class="col-md-9">
+      <!-- Sort and Results Count -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <p class="mb-0"><strong>{{filteredFlights.length}}</strong> flights found</p>
+        </div>
+        <div class="d-flex align-items-center">
+          <span class="me-2">Sort by:</span>
+          <mat-form-field appearance="outline" class="sort-select">
+            <mat-select [(ngModel)]="selectedSort" (selectionChange)="sortFlights()">
+              <mat-option *ngFor="let option of sortOptions" [value]="option.value">
+                {{option.label}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      
+      <!-- Flight Cards -->
+      <div class="flight-listings">
+        <mat-card class="flight-card mb-4" *ngFor="let flight of paginatedFlights">
+          <mat-card-content>
+            <!-- Airline Info -->
+            <div class="airline-info mb-3">
+              <div class="d-flex align-items-center">
+                <img [src]="flight.logo" [alt]="flight.airline" class="airline-logo">
+                <div class="ms-2">
+                  <h5 class="airline-name mb-0">{{flight.airline}}</h5>
+                  <p class="flight-number mb-0">{{flight.flightNumber}}</p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Flight Details -->
+            <div class="flight-details">
+              <div class="row align-items-center">
+                <!-- Departure -->
+                <div class="col-md-3 text-center">
+                  <h3 class="time mb-0">{{flight.departureTime}}</h3>
+                  <p class="airport mb-0">{{flight.origin}}</p>
+                  <p class="date">{{flight.departureDate}}</p>
+                </div>
+                
+                <!-- Flight Path -->
+                <div class="col-md-6 text-center">
+                  <div class="flight-path">
+                    <div class="duration">{{flight.duration}}</div>
+                    <div class="path-line">
+                      <div class="plane-icon">
+                        <mat-icon>flight</mat-icon>
+                      </div>
+                    </div>
+                    <div class="stops-info" *ngIf="flight.stops > 0">
+                      <span class="stop-count">{{flight.stops}} stop</span>
+                      <span class="stop-airport">{{flight.stopAirport}}</span>
+                      <span class="stop-duration">{{flight.stopDuration}}</span>
+                    </div>
+                    <div class="direct-info" *ngIf="flight.stops === 0">
+                      <span class="direct-label">Direct</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Arrival -->
+                <div class="col-md-3 text-center">
+                  <h3 class="time mb-0">{{flight.arrivalTime}}</h3>
+                  <p class="airport mb-0">{{flight.destination}}</p>
+                  <p class="date">{{flight.departureDate}}</p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Amenities -->
+            <div class="amenities mt-3">
+              <div class="d-flex flex-wrap">
+                <span class="amenity-tag" *ngFor="let amenity of flight.amenities">
+                  <mat-icon class="amenity-icon">check_circle</mat-icon>
+                  {{amenity}}
+                </span>
+              </div>
+            </div>
+            
+            <!-- Price and Booking -->
+            <div class="booking-section mt-3">
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="price-info">
+                  <span class="price">${{flight.price}}</span>
+                  <span class="per-person">per person</span>
+                </div>
+                <div class="booking-actions">
+                  <button mat-button color="primary">Flight Details</button>
+                  <button mat-raised-button color="accent">Select Flight</button>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        
+        <!-- No Results Message -->
+        <div class="no-results text-center py-5" *ngIf="filteredFlights.length === 0">
+          <mat-icon class="large-icon">search_off</mat-icon>
+          <h3>No flights found</h3>
+          <p>Try adjusting your filters or search for different dates</p>
+          <button mat-raised-button color="primary" (click)="resetFilters()">Reset Filters</button>
+        </div>
+      </div>
+      
+      <!-- Pagination -->
+      <mat-paginator 
+        [length]="totalItems"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="[4, 8, 12]"
+        (page)="onPageChange($event)"
+        *ngIf="filteredFlights.length > 0">
+      </mat-paginator>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,267 @@
+<!-- Page Header -->
+<div class="page-header">
+  <div class="container">
+    <h1>Book a Cab</h1>
+    <p>Find and book the perfect cab for your journey</p>
+  </div>
+</div>
+
+<!-- Search Section -->
+<div class="container">
+  <div class="search-card">
+    <div class="search-form">
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Pickup Location</mat-label>
+            <input matInput [(ngModel)]="searchFilters.pickupLocation" placeholder="Enter pickup location">
+            <mat-icon matSuffix>location_on</mat-icon>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Dropoff Location</mat-label>
+            <input matInput [(ngModel)]="searchFilters.dropoffLocation" placeholder="Enter dropoff location">
+            <mat-icon matSuffix>location_on</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Pickup Date</mat-label>
+            <input matInput [matDatepicker]="pickupDatepicker" [(ngModel)]="searchFilters.pickupDate">
+            <mat-datepicker-toggle matSuffix [for]="pickupDatepicker"></mat-datepicker-toggle>
+            <mat-datepicker #pickupDatepicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Pickup Time</mat-label>
+            <input matInput [(ngModel)]="searchFilters.pickupTime" type="time">
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Return Date (Optional)</mat-label>
+            <input matInput [matDatepicker]="returnDatepicker" [(ngModel)]="searchFilters.returnDate">
+            <mat-datepicker-toggle matSuffix [for]="returnDatepicker"></mat-datepicker-toggle>
+            <mat-datepicker #returnDatepicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Return Time</mat-label>
+            <input matInput [(ngModel)]="searchFilters.returnTime" type="time">
+          </mat-form-field>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-4">
+          <div class="passenger-selector">
+            <label>Passengers</label>
+            <div class="passenger-control">
+              <button mat-icon-button (click)="decrementPassengers()">
+                <mat-icon>remove</mat-icon>
+              </button>
+              <span>{{ searchFilters.passengers }}</span>
+              <button mat-icon-button (click)="incrementPassengers()">
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Cab Type</mat-label>
+            <mat-select [(ngModel)]="searchFilters.cabType">
+              <mat-option *ngFor="let type of cabTypes" [value]="type.value">
+                {{ type.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <button mat-raised-button color="primary" class="search-button" (click)="applyFilters()">
+            <mat-icon>search</mat-icon>
+            Search Cabs
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Popular Routes Section -->
+<div class="container popular-routes-section">
+  <h2>Popular Routes</h2>
+  <div class="row">
+    <div class="col-md-3" *ngFor="let route of popularRoutes">
+      <div class="popular-route-card" (click)="selectRoute(route)">
+        <div class="route-image">
+          <img src="{{ route.image }}" alt="{{ route.from }} to {{ route.to }}">
+        </div>
+        <div class="route-info">
+          <h3>{{ route.from }} to {{ route.to }}</h3>
+          <p class="price">From ${{ route.price }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Results Section -->
+<div class="container results-container" *ngIf="searchFilters.pickupLocation && searchFilters.dropoffLocation">
+  <div class="row">
+    <!-- Filters Sidebar -->
+    <div class="col-md-3">
+      <div class="filter-card">
+        <h3>Filter Results</h3>
+        
+        <div class="filter-section">
+          <h4>Price Range</h4>
+          <div class="price-range">
+            <span>${{ searchFilters.priceRange.min }}</span>
+            <span>${{ searchFilters.priceRange.max }}</span>
+          </div>
+          <mat-slider
+            class="w-100"
+            [min]="0"
+            [max]="200"
+            [step]="5">
+            <input matSliderStartThumb [(ngModel)]="searchFilters.priceRange.min" (change)="applyFilters()">
+            <input matSliderEndThumb [(ngModel)]="searchFilters.priceRange.max" (change)="applyFilters()">
+          </mat-slider>
+        </div>
+        
+        <div class="filter-section">
+          <h4>Cab Providers</h4>
+          <div class="provider-list">
+            <div class="provider-item" *ngFor="let provider of availableProviders" 
+                 [class.selected]="isProviderSelected(provider.code)"
+                 (click)="toggleProvider(provider.code)">
+              <span>{{ provider.name }}</span>
+              <mat-icon *ngIf="isProviderSelected(provider.code)">check</mat-icon>
+            </div>
+          </div>
+        </div>
+        
+        <div class="filter-section">
+          <h4>Features</h4>
+          <div class="feature-list">
+            <mat-checkbox [(ngModel)]="searchFilters.features.airConditioned" (change)="applyFilters()">
+              Air Conditioning
+            </mat-checkbox>
+            <mat-checkbox [(ngModel)]="searchFilters.features.wifi" (change)="applyFilters()">
+              WiFi
+            </mat-checkbox>
+            <mat-checkbox [(ngModel)]="searchFilters.features.childSeat" (change)="applyFilters()">
+              Child Seat
+            </mat-checkbox>
+            <mat-checkbox [(ngModel)]="searchFilters.features.gps" (change)="applyFilters()">
+              GPS
+            </mat-checkbox>
+            <mat-checkbox [(ngModel)]="searchFilters.features.musicSystem" (change)="applyFilters()">
+              Music System
+            </mat-checkbox>
+          </div>
+        </div>
+        
+        <button mat-button color="primary" (click)="resetFilters()">Reset Filters</button>
+      </div>
+    </div>
+    
+    <!-- Cab Listings -->
+    <div class="col-md-9">
+      <div class="results-header">
+        <div class="results-count">
+          {{ totalItems }} cabs found
+        </div>
+        <div class="sort-select">
+          <mat-form-field appearance="outline">
+            <mat-label>Sort by</mat-label>
+            <mat-select [(ngModel)]="selectedSort" (selectionChange)="applyFilters()">
+              <mat-option *ngFor="let option of sortOptions" [value]="option.value">
+                {{ option.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      
+      <!-- No Results Message -->
+      <div class="no-results" *ngIf="filteredCabs.length === 0">
+        <mat-icon>search_off</mat-icon>
+        <h3>No cabs found</h3>
+        <p>Try adjusting your filters or search criteria</p>
+      </div>
+      
+      <!-- Cab Cards -->
+      <div class="cab-list" *ngIf="filteredCabs.length > 0">
+        <div class="cab-card" *ngFor="let cab of paginatedCabs">
+          <div class="cab-image">
+            <img [src]="cab.image" [alt]="cab.name">
+          </div>
+          <div class="cab-details">
+            <div class="cab-header">
+              <h3>{{ cab.name }}</h3>
+              <div class="provider">
+                <img [src]="cab.providerLogo" [alt]="cab.provider" class="provider-logo">
+                <span>{{ cab.provider }}</span>
+              </div>
+            </div>
+            
+            <div class="cab-info">
+              <div class="info-item">
+                <mat-icon>people</mat-icon>
+                <span>{{ cab.capacity }} passengers</span>
+              </div>
+              <div class="info-item">
+                <mat-icon>work</mat-icon>
+                <span>{{ cab.luggage }} luggage</span>
+              </div>
+              <div class="info-item">
+                <mat-icon>access_time</mat-icon>
+                <span>{{ cab.estimatedTime }}</span>
+              </div>
+              <div class="info-item">
+                <mat-icon>directions_car</mat-icon>
+                <span>{{ cab.distance }}</span>
+              </div>
+            </div>
+            
+            <div class="cab-features">
+              <span class="feature-tag" *ngFor="let feature of cab.features">{{ feature }}</span>
+            </div>
+            
+            <div class="cab-rating">
+              <div class="stars">
+                <ng-container *ngFor="let star of getRatingStars(cab.rating)">
+                  <mat-icon *ngIf="star === 1">star</mat-icon>
+                  <mat-icon *ngIf="star === 0.5">star_half</mat-icon>
+                  <mat-icon *ngIf="star === 0">star_border</mat-icon>
+                </ng-container>
+              </div>
+              <span class="rating-text">{{ cab.rating }} ({{ cab.reviewCount }} reviews)</span>
+            </div>
+          </div>
+          
+          <div class="cab-price">
+            <div class="price">${{ cab.price }}</div>
+            <button mat-raised-button color="primary">Book Now</button>
+          </div>
+        </div>
+        
+        <!-- Pagination -->
+        <mat-paginator
+          [length]="totalItems"
+          [pageSize]="pageSize"
+          [pageSizeOptions]="pageSizeOptions"
+          (page)="onPageChange($event)">
+        </mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>

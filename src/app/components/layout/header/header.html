@@ -1,0 +1,91 @@
+<mat-toolbar color="primary" class="mat-elevation-z6">
+  <div class="container">
+    <div class="row w-100 align-items-center">
+      <!-- Logo -->
+      <div class="col-md-3 col-6">
+        <a routerLink="/" class="navbar-brand d-flex align-items-center">
+          <mat-icon class="me-2">flight_takeoff</mat-icon>
+          <span class="fw-bold">Smart Booking</span>
+        </a>
+      </div>
+      
+      <!-- Navigation -->
+      <div class="col-md-6 d-none d-md-block">
+        <nav class="d-flex justify-content-center">
+          <a mat-button routerLink="/hotels" routerLinkActive="active-link">
+            <mat-icon>hotel</mat-icon> Hotels
+          </a>
+          <a mat-button routerLink="/flights" routerLinkActive="active-link">
+            <mat-icon>flight</mat-icon> Flights
+          </a>
+          <a mat-button routerLink="/trains" routerLinkActive="active-link">
+            <mat-icon>train</mat-icon> Trains
+          </a>
+          <a mat-button routerLink="/cabs" routerLinkActive="active-link">
+            <mat-icon>local_taxi</mat-icon> Cabs
+          </a>
+        </nav>
+      </div>
+      
+      <!-- Auth Buttons -->
+      <div class="col-md-3 col-6 text-end">
+        <ng-container *ngIf="!isLoggedIn; else loggedInTemplate">
+          <button mat-raised-button color="accent" (click)="login()">
+            <mat-icon>login</mat-icon> Login
+          </button>
+        </ng-container>
+        
+        <ng-template #loggedInTemplate>
+          <button mat-button [matMenuTriggerFor]="userMenu">
+            <mat-icon>account_circle</mat-icon> My Account
+          </button>
+          <mat-menu #userMenu="matMenu">
+            <a mat-menu-item routerLink="/profile">
+              <mat-icon>person</mat-icon> Profile
+            </a>
+            <a mat-menu-item routerLink="/bookings">
+              <mat-icon>book</mat-icon> My Bookings
+            </a>
+            <button mat-menu-item (click)="logout()">
+              <mat-icon>exit_to_app</mat-icon> Logout
+            </button>
+          </mat-menu>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</mat-toolbar>
+
+<!-- Mobile Navigation Menu -->
+<div class="mobile-nav d-md-none">
+  <mat-toolbar color="primary">
+    <div class="container">
+      <div class="row w-100 justify-content-around">
+        <div class="col-3 text-center">
+          <a routerLink="/hotels" class="mobile-nav-link">
+            <mat-icon>hotel</mat-icon>
+            <div>Hotels</div>
+          </a>
+        </div>
+        <div class="col-3 text-center">
+          <a routerLink="/flights" class="mobile-nav-link">
+            <mat-icon>flight</mat-icon>
+            <div>Flights</div>
+          </a>
+        </div>
+        <div class="col-3 text-center">
+          <a routerLink="/trains" class="mobile-nav-link">
+            <mat-icon>train</mat-icon>
+            <div>Trains</div>
+          </a>
+        </div>
+        <div class="col-3 text-center">
+          <a routerLink="/cabs" class="mobile-nav-link">
+            <mat-icon>local_taxi</mat-icon>
+            <div>Cabs</div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </mat-toolbar>
+</div>

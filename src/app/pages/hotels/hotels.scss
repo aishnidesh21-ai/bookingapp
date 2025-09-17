@@ -1,0 +1,204 @@
+// Hotels Page Styles
+
+// Page Header
+.page-header {
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/assets/images/hotel-header.jpg');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  padding: 4rem 0;
+  margin-bottom: 2rem;
+  text-align: center;
+  
+  h1 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  
+  .lead {
+    font-size: 1.25rem;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+}
+
+// Filter Card
+.filter-card {
+  position: sticky;
+  top: 1rem;
+  
+  mat-card-header {
+    padding-bottom: 0;
+  }
+  
+  mat-card-content {
+    padding: 1rem;
+  }
+  
+  .amenities-filter {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .star-rating-filter {
+    .form-check {
+      margin-bottom: 0.5rem;
+    }
+    
+    .stars {
+      display: inline-flex;
+      align-items: center;
+    }
+    
+    .star-icon {
+      font-size: 18px;
+      height: 18px;
+      width: 18px;
+      color: #ffc107;
+      
+      &.empty {
+        color: #e0e0e0;
+      }
+    }
+  }
+  
+  .sort-select {
+    width: 150px;
+    margin-bottom: -1.25rem;
+  }
+}
+
+// Hotel Listings
+.hotel-listings {
+  .hotel-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    overflow: hidden;
+    
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+  }
+  
+  .hotel-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    min-height: 200px;
+  }
+  
+  .hotel-name {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .hotel-rating {
+    display: flex;
+    align-items: center;
+    background-color: #4caf50;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    
+    .rating-value {
+      font-weight: bold;
+      margin-right: 4px;
+    }
+    
+    .star-icon {
+      font-size: 16px;
+      height: 16px;
+      width: 16px;
+    }
+  }
+  
+  .location {
+    display: flex;
+    align-items: center;
+    color: #666;
+    
+    mat-icon {
+      font-size: 16px;
+      height: 16px;
+      width: 16px;
+      margin-right: 4px;
+    }
+  }
+  
+  .description {
+    color: #555;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .amenities {
+    mat-chip {
+      font-size: 0.8rem;
+      height: 24px;
+      min-height: 24px;
+    }
+  }
+  
+  .price {
+    .amount {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #e91e63;
+    }
+    
+    .per-night {
+      font-size: 0.9rem;
+      color: #777;
+    }
+  }
+  
+  .actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+}
+
+// No Results
+.no-results {
+  .large-icon {
+    font-size: 4rem;
+    height: 4rem;
+    width: 4rem;
+    color: #ccc;
+    margin-bottom: 1rem;
+  }
+  
+  h3 {
+    color: #555;
+    margin-bottom: 0.5rem;
+  }
+  
+  p {
+    color: #777;
+    margin-bottom: 1.5rem;
+  }
+}
+
+// Responsive Adjustments
+@media (max-width: 767px) {
+  .hotel-card {
+    .row {
+      flex-direction: column;
+    }
+    
+    .col-md-4 {
+      .hotel-img {
+        height: 200px;
+      }
+    }
+  }
+  
+  .sort-select {
+    width: 120px;
+  }
+}

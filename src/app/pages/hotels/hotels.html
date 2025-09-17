@@ -1,0 +1,206 @@
+<!-- Hotels Page Header -->
+<section class="page-header">
+  <div class="container">
+    <h1 class="display-4">Find Your Perfect Hotel</h1>
+    <p class="lead">Browse our selection of top-rated hotels and accommodations</p>
+  </div>
+</section>
+
+<!-- Main Content -->
+<div class="container mt-4">
+  <div class="row">
+    <!-- Filters Sidebar -->
+    <div class="col-md-3">
+      <mat-card class="filter-card">
+        <mat-card-header>
+          <mat-card-title>Search & Filters</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <form (ngSubmit)="applyFilters()">
+            <!-- Destination -->
+            <mat-form-field appearance="outline" class="w-100 mb-3">
+              <mat-label>Destination</mat-label>
+              <input matInput [(ngModel)]="searchFilters.destination" name="destination" placeholder="City, area, or hotel name">
+              <mat-icon matSuffix>location_on</mat-icon>
+            </mat-form-field>
+            
+            <!-- Check-in/Check-out -->
+            <mat-form-field appearance="outline" class="w-100 mb-3">
+              <mat-label>Check-in</mat-label>
+              <input matInput [matDatepicker]="checkinPicker" [(ngModel)]="searchFilters.checkIn" name="checkIn">
+              <mat-datepicker-toggle matSuffix [for]="checkinPicker"></mat-datepicker-toggle>
+              <mat-datepicker #checkinPicker></mat-datepicker>
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline" class="w-100 mb-3">
+              <mat-label>Check-out</mat-label>
+              <input matInput [matDatepicker]="checkoutPicker" [(ngModel)]="searchFilters.checkOut" name="checkOut">
+              <mat-datepicker-toggle matSuffix [for]="checkoutPicker"></mat-datepicker-toggle>
+              <mat-datepicker #checkoutPicker></mat-datepicker>
+            </mat-form-field>
+            
+            <!-- Guests & Rooms -->
+            <div class="row mb-3">
+              <div class="col-6">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Guests</mat-label>
+                  <mat-select [(ngModel)]="searchFilters.guests" name="guests">
+                    <mat-option [value]="1">1 Guest</mat-option>
+                    <mat-option [value]="2">2 Guests</mat-option>
+                    <mat-option [value]="3">3 Guests</mat-option>
+                    <mat-option [value]="4">4 Guests</mat-option>
+                    <mat-option [value]="5">5+ Guests</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-6">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Rooms</mat-label>
+                  <mat-select [(ngModel)]="searchFilters.rooms" name="rooms">
+                    <mat-option [value]="1">1 Room</mat-option>
+                    <mat-option [value]="2">2 Rooms</mat-option>
+                    <mat-option [value]="3">3 Rooms</mat-option>
+                    <mat-option [value]="4">4+ Rooms</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            
+            <!-- Price Range -->
+            <div class="mb-4">
+              <h6>Price Range</h6>
+              <div class="d-flex justify-content-between mb-2">
+                <span>${{searchFilters.minPrice}}</span>
+                <span>${{searchFilters.maxPrice}}</span>
+              </div>
+              <mat-slider class="w-100" [min]="0" [max]="1000" [step]="50">
+                <input matSliderStartThumb [(ngModel)]="searchFilters.minPrice" name="minPrice">
+                <input matSliderEndThumb [(ngModel)]="searchFilters.maxPrice" name="maxPrice">
+              </mat-slider>
+            </div>
+            
+            <!-- Star Rating -->
+            <div class="mb-4">
+              <h6>Star Rating</h6>
+              <div class="star-rating-filter">
+                <div class="form-check" *ngFor="let i of [5, 4, 3, 2, 1]">
+                  <input class="form-check-input" type="radio" [id]="'star'+i" name="starRating" [value]="i" [(ngModel)]="searchFilters.starRating">
+                  <label class="form-check-label" [for]="'star'+i">
+                    <span class="stars">
+                      <mat-icon *ngFor="let star of [].constructor(i)" class="star-icon">star</mat-icon>
+                      <mat-icon *ngFor="let star of [].constructor(5-i)" class="star-icon empty">star_border</mat-icon>
+                    </span>
+                    <span *ngIf="i === 5">& up</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Amenities -->
+            <div class="mb-4">
+              <h6>Amenities</h6>
+              <div class="amenities-filter">
+                <mat-checkbox [(ngModel)]="searchFilters.amenities.wifi" name="wifi" color="primary">Free WiFi</mat-checkbox>
+                <mat-checkbox [(ngModel)]="searchFilters.amenities.parking" name="parking" color="primary">Parking</mat-checkbox>
+                <mat-checkbox [(ngModel)]="searchFilters.amenities.pool" name="pool" color="primary">Swimming Pool</mat-checkbox>
+                <mat-checkbox [(ngModel)]="searchFilters.amenities.spa" name="spa" color="primary">Spa</mat-checkbox>
+                <mat-checkbox [(ngModel)]="searchFilters.amenities.restaurant" name="restaurant" color="primary">Restaurant</mat-checkbox>
+                <mat-checkbox [(ngModel)]="searchFilters.amenities.airConditioning" name="airConditioning" color="primary">Air Conditioning</mat-checkbox>
+                <mat-checkbox [(ngModel)]="searchFilters.amenities.petFriendly" name="petFriendly" color="primary">Pet Friendly</mat-checkbox>
+                <mat-checkbox [(ngModel)]="searchFilters.amenities.gym" name="gym" color="primary">Fitness Center</mat-checkbox>
+              </div>
+            </div>
+            
+            <!-- Filter Buttons -->
+            <div class="d-grid gap-2">
+              <button mat-raised-button color="primary" type="submit">Apply Filters</button>
+              <button mat-stroked-button type="button" (click)="resetFilters()">Reset Filters</button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    
+    <!-- Hotel Listings -->
+    <div class="col-md-9">
+      <!-- Sort and Results Count -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <p class="mb-0"><strong>{{filteredHotels.length}}</strong> hotels found</p>
+        </div>
+        <div class="d-flex align-items-center">
+          <span class="me-2">Sort by:</span>
+          <mat-form-field appearance="outline" class="sort-select">
+            <mat-select [(ngModel)]="selectedSort" (selectionChange)="sortHotels()">
+              <mat-option *ngFor="let option of sortOptions" [value]="option.value">
+                {{option.label}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      
+      <!-- Hotel Cards -->
+      <div class="hotel-listings">
+        <mat-card class="hotel-card mb-4" *ngFor="let hotel of paginatedHotels">
+          <div class="row g-0">
+            <div class="col-md-4">
+              <img [src]="hotel.image" [alt]="hotel.name" class="hotel-img">
+            </div>
+            <div class="col-md-8">
+              <mat-card-content class="p-3">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <h3 class="hotel-name mb-0">{{hotel.name}}</h3>
+                  <div class="hotel-rating">
+                    <span class="rating-value">{{hotel.rating}}</span>
+                    <mat-icon class="star-icon">star</mat-icon>
+                  </div>
+                </div>
+                
+                <p class="location mb-2">
+                  <mat-icon>location_on</mat-icon> {{hotel.location}}
+                </p>
+                
+                <p class="description mb-3">{{hotel.description}}</p>
+                
+                <div class="amenities mb-3">
+                  <mat-chip-set>
+                    <mat-chip *ngFor="let amenity of hotel.amenities">{{amenity}}</mat-chip>
+                  </mat-chip-set>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="price">
+                    <span class="amount">${{hotel.price}}</span>
+                    <span class="per-night">per night</span>
+                  </div>
+                  <div class="actions">
+                    <button mat-button color="primary" [routerLink]="['/hotels', hotel.id]">View Details</button>
+                    <button mat-raised-button color="accent">Book Now</button>
+                  </div>
+                </div>
+              </mat-card-content>
+            </div>
+          </div>
+        </mat-card>
+        
+        <!-- No Results Message -->
+        <div class="no-results text-center py-5" *ngIf="filteredHotels.length === 0">
+          <mat-icon class="large-icon">search_off</mat-icon>
+          <h3>No hotels found</h3>
+          <p>Try adjusting your filters or search for a different location</p>
+          <button mat-raised-button color="primary" (click)="resetFilters()">Reset Filters</button>
+        </div>
+      </div>
+      
+      <!-- Pagination -->
+      <mat-paginator 
+        [length]="totalItems"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="[4, 8, 12]"
+        (page)="onPageChange($event)"
+        *ngIf="filteredHotels.length > 0">
+      </mat-paginator>
+    </div>
+  </div>
+</div>

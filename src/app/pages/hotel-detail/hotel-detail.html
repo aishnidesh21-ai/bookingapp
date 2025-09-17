@@ -1,0 +1,240 @@
+<!-- Hotel Detail Page -->
+<div class="hotel-detail-page">
+  <!-- Hotel Header -->
+  <div class="hotel-header" [style.background-image]="'url(' + hotel.image + ')'">
+    <div class="container">
+      <div class="header-content">
+        <h1>{{ hotel.name }}</h1>
+        <div class="location">
+          <mat-icon>location_on</mat-icon>
+          <span>{{ hotel.location }}</span>
+        </div>
+        <div class="rating">
+          <div class="stars">
+            <ng-container *ngFor="let star of getRatingStars(hotel.rating)">
+              <mat-icon *ngIf="star === 1">star</mat-icon>
+              <mat-icon *ngIf="star === 0.5">star_half</mat-icon>
+              <mat-icon *ngIf="star === 0">star_border</mat-icon>
+            </ng-container>
+          </div>
+          <span class="rating-value">{{ hotel.rating }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container main-content">
+    <div class="row">
+      <!-- Hotel Details -->
+      <div class="col-md-8">
+        <mat-card class="detail-card">
+          <mat-tab-group>
+            <!-- Overview Tab -->
+            <mat-tab label="Overview">
+              <div class="tab-content">
+                <h2>About {{ hotel.name }}</h2>
+                <p class="description">{{ hotel.description }}</p>
+                
+                <div class="amenities-section">
+                  <h3>Amenities</h3>
+                  <div class="amenities-list">
+                    <div class="amenity-item" *ngFor="let amenity of hotel.amenities">
+                      <mat-icon>check_circle</mat-icon>
+                      <span>{{ amenity }}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="hotel-info">
+                  <h3>Hotel Information</h3>
+                  <div class="info-grid">
+                    <div class="info-item">
+                      <div class="info-label">Address</div>
+                      <div class="info-value">{{ hotel.address }}</div>
+                    </div>
+                    <div class="info-item">
+                      <div class="info-label">Phone</div>
+                      <div class="info-value">{{ hotel.phone }}</div>
+                    </div>
+                    <div class="info-item">
+                      <div class="info-label">Email</div>
+                      <div class="info-value">{{ hotel.email }}</div>
+                    </div>
+                    <div class="info-item">
+                      <div class="info-label">Check-in</div>
+                      <div class="info-value">{{ hotel.checkIn }}</div>
+                    </div>
+                    <div class="info-item">
+                      <div class="info-label">Check-out</div>
+                      <div class="info-value">{{ hotel.checkOut }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </mat-tab>
+            
+            <!-- Photos Tab -->
+            <mat-tab label="Photos">
+              <div class="tab-content">
+                <div class="photo-gallery">
+                  <div class="row">
+                    <div class="col-md-6 col-lg-4 mb-4" *ngFor="let image of hotel.images">
+                      <div class="gallery-item">
+                        <img [src]="image" [alt]="hotel.name" class="img-fluid">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </mat-tab>
+            
+            <!-- Rooms Tab -->
+            <mat-tab label="Rooms">
+              <div class="tab-content">
+                <h2>Available Rooms</h2>
+                <div class="room-list">
+                  <mat-card class="room-card" *ngFor="let room of hotel.rooms">
+                    <div class="row g-0">
+                      <div class="col-md-4">
+                        <img [src]="room.image" [alt]="room.type" class="room-img">
+                      </div>
+                      <div class="col-md-8">
+                        <mat-card-content>
+                          <h3 class="room-type">{{ room.type }}</h3>
+                          <div class="room-capacity">
+                            <mat-icon>people</mat-icon>
+                            <span>{{ room.capacity }}</span>
+                          </div>
+                          <div class="room-amenities">
+                            <mat-chip-set>
+                              <mat-chip *ngFor="let amenity of room.amenities">{{ amenity }}</mat-chip>
+                            </mat-chip-set>
+                          </div>
+                          <div class="room-footer">
+                            <div class="room-price">
+                              <span class="price">${{ room.price }}</span>
+                              <span class="per-night">per night</span>
+                            </div>
+                            <button mat-raised-button color="primary" (click)="bookingData.roomType = room.type">Select</button>
+                          </div>
+                        </mat-card-content>
+                      </div>
+                    </div>
+                  </mat-card>
+                </div>
+              </div>
+            </mat-tab>
+            
+            <!-- Reviews Tab -->
+            <mat-tab label="Reviews">
+              <div class="tab-content">
+                <h2>Guest Reviews</h2>
+                <div class="reviews-list">
+                  <div class="review-card" *ngFor="let review of hotel.reviews">
+                    <div class="review-header">
+                      <div class="reviewer-name">{{ review.name }}</div>
+                      <div class="review-date">{{ review.date }}</div>
+                    </div>
+                    <div class="review-rating">
+                      <ng-container *ngFor="let i of [1, 2, 3, 4, 5]">
+                        <mat-icon [class.filled]="i <= review.rating">star</mat-icon>
+                      </ng-container>
+                    </div>
+                    <div class="review-comment">
+                      {{ review.comment }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </mat-card>
+      </div>
+      
+      <!-- Booking Card -->
+      <div class="col-md-4">
+        <mat-card class="booking-card">
+          <mat-card-header>
+            <mat-card-title>Book Your Stay</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <form (ngSubmit)="bookNow()">
+              <mat-form-field appearance="outline" class="w-100 mb-3">
+                <mat-label>Check-in</mat-label>
+                <input matInput [matDatepicker]="checkinPicker" [(ngModel)]="bookingData.checkIn" name="checkIn" required>
+                <mat-datepicker-toggle matSuffix [for]="checkinPicker"></mat-datepicker-toggle>
+                <mat-datepicker #checkinPicker></mat-datepicker>
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline" class="w-100 mb-3">
+                <mat-label>Check-out</mat-label>
+                <input matInput [matDatepicker]="checkoutPicker" [(ngModel)]="bookingData.checkOut" name="checkOut" required>
+                <mat-datepicker-toggle matSuffix [for]="checkoutPicker"></mat-datepicker-toggle>
+                <mat-datepicker #checkoutPicker></mat-datepicker>
+              </mat-form-field>
+              
+              <div class="row mb-3">
+                <div class="col-6">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Guests</mat-label>
+                    <mat-select [(ngModel)]="bookingData.guests" name="guests" required>
+                      <mat-option [value]="1">1 Guest</mat-option>
+                      <mat-option [value]="2">2 Guests</mat-option>
+                      <mat-option [value]="3">3 Guests</mat-option>
+                      <mat-option [value]="4">4 Guests</mat-option>
+                      <mat-option [value]="5">5+ Guests</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-6">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Rooms</mat-label>
+                    <mat-select [(ngModel)]="bookingData.rooms" name="rooms" required>
+                      <mat-option [value]="1">1 Room</mat-option>
+                      <mat-option [value]="2">2 Rooms</mat-option>
+                      <mat-option [value]="3">3 Rooms</mat-option>
+                      <mat-option [value]="4">4+ Rooms</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              
+              <mat-form-field appearance="outline" class="w-100 mb-3">
+                <mat-label>Room Type</mat-label>
+                <mat-select [(ngModel)]="bookingData.roomType" name="roomType" required>
+                  <mat-option *ngFor="let room of hotel.rooms" [value]="room.type">
+                    {{ room.type }} - ${{ room.price }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              
+              <div class="price-summary">
+                <div class="price-row">
+                  <span>Room Rate</span>
+                  <span>${{ hotel.price }} / night</span>
+                </div>
+                <div class="price-row">
+                  <span>Number of Nights</span>
+                  <span>3</span>
+                </div>
+                <div class="price-row">
+                  <span>Taxes & Fees</span>
+                  <span>${{ hotel.price * 0.15 | number:'1.0-2' }}</span>
+                </div>
+                <div class="price-row total">
+                  <span>Total</span>
+                  <span>${{ hotel.price * 3 + hotel.price * 0.15 | number:'1.0-2' }}</span>
+                </div>
+              </div>
+              
+              <button mat-raised-button color="primary" type="submit" class="book-btn">
+                Book Now
+              </button>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</div>

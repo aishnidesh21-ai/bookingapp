@@ -1,0 +1,239 @@
+// Hero Section
+.hero-section {
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  padding: 100px 0 150px;
+  margin-bottom: -60px;
+  
+  h1 {
+    font-weight: 700;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  }
+  
+  .lead {
+    font-size: 1.25rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  }
+}
+
+// Search Card
+.search-card {
+  border-radius: 10px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  
+  .search-btn {
+    padding: 8px 30px;
+    font-size: 16px;
+  }
+}
+
+// Featured Section
+.featured-section, .destinations-section, .offers-section {
+  padding: 80px 0;
+}
+
+.section-title {
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.section-subtitle {
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 40px;
+  color: #666;
+}
+
+// Listing Cards
+.listing-card {
+  transition: transform 0.3s, box-shadow 0.3s;
+  border-radius: 10px;
+  overflow: hidden;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card-img {
+    height: 180px;
+    object-fit: cover;
+  }
+  
+  .rating {
+    display: flex;
+    align-items: center;
+    color: #ff9800;
+    font-weight: 500;
+    
+    .star-icon {
+      font-size: 18px;
+      height: 18px;
+      width: 18px;
+      margin-right: 2px;
+    }
+  }
+  
+  .location {
+    display: flex;
+    align-items: center;
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 10px;
+    
+    mat-icon {
+      font-size: 16px;
+      height: 16px;
+      width: 16px;
+      margin-right: 4px;
+    }
+  }
+  
+  .price {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+    
+    .per-night {
+      font-size: 14px;
+      font-weight: 400;
+      color: #666;
+    }
+  }
+}
+
+// Destination Cards
+.destination-card {
+  position: relative;
+  margin-bottom: 20px;
+  overflow: hidden;
+  border-radius: 10px;
+  
+  .destination-img {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    
+    img {
+      transition: transform 0.5s;
+      height: 200px;
+      width: 100%;
+      object-fit: cover;
+    }
+    
+    &:hover {
+      img {
+        transform: scale(1.1);
+      }
+      
+      .destination-overlay {
+        opacity: 1;
+      }
+    }
+  }
+  
+  .destination-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+    color: white;
+    padding: 20px;
+    
+    h3 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+    
+    p {
+      margin-bottom: 15px;
+    }
+    
+    button {
+      color: white;
+      border-color: white;
+    }
+  }
+}
+
+// Offer Cards
+.offer-card {
+  position: relative;
+  overflow: hidden;
+  
+  .discount-badge {
+    position: absolute;
+    top: 20px;
+    right: -30px;
+    background: #f44336;
+    color: white;
+    padding: 5px 30px;
+    font-weight: 700;
+    transform: rotate(45deg);
+    font-size: 14px;
+  }
+}
+
+// Flight Table
+.flight-table {
+  .route {
+    display: flex;
+    align-items: center;
+    
+    .from, .to {
+      font-weight: 500;
+    }
+    
+    mat-icon {
+      margin: 0 10px;
+      font-size: 16px;
+      color: #666;
+    }
+  }
+  
+  .price {
+    font-weight: 700;
+    color: #333;
+  }
+}
+
+// Newsletter Section
+.newsletter-section {
+  background-color: #f5f5f5;
+  padding: 60px 0;
+  
+  .input-group {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+}
+
+// Responsive Adjustments
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 60px 0 120px;
+  }
+  
+  .section-title {
+    font-size: 28px;
+  }
+  
+  .section-subtitle {
+    font-size: 16px;
+  }
+}

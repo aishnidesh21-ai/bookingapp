@@ -1,0 +1,351 @@
+<!-- Hero Section with Search -->
+<section class="hero-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 offset-md-2 text-center">
+        <h1 class="display-4 mb-4">Find Your Perfect Travel Experience</h1>
+        <p class="lead mb-5">Discover amazing hotels, flights, trains and cabs at the best prices</p>
+      </div>
+    </div>
+
+    <!-- Search Tabs -->
+    <div class="row">
+      <div class="col-md-10 offset-md-1">
+        <mat-card class="search-card">
+          <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center">
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <mat-icon class="me-2">hotel</mat-icon>
+                Hotels
+              </ng-template>
+              <div class="p-4">
+                <form (ngSubmit)="search()">
+                  <div class="row g-3">
+                    <div class="col-md-4">
+                      <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Destination</mat-label>
+                        <input matInput placeholder="Where are you going?" [(ngModel)]="searchData.destination" name="destination" required>
+                        <mat-icon matSuffix>location_on</mat-icon>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-3">
+                      <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Check-in</mat-label>
+                        <input matInput [matDatepicker]="checkinPicker" [(ngModel)]="searchData.checkIn" name="checkIn" required>
+                        <mat-datepicker-toggle matSuffix [for]="checkinPicker"></mat-datepicker-toggle>
+                        <mat-datepicker #checkinPicker></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-3">
+                      <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Check-out</mat-label>
+                        <input matInput [matDatepicker]="checkoutPicker" [(ngModel)]="searchData.checkOut" name="checkOut" required>
+                        <mat-datepicker-toggle matSuffix [for]="checkoutPicker"></mat-datepicker-toggle>
+                        <mat-datepicker #checkoutPicker></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-2">
+                      <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Guests</mat-label>
+                        <mat-select [(ngModel)]="searchData.guests" name="guests">
+                          <mat-option [value]="1">1 Guest</mat-option>
+                          <mat-option [value]="2">2 Guests</mat-option>
+                          <mat-option [value]="3">3 Guests</mat-option>
+                          <mat-option [value]="4">4 Guests</mat-option>
+                          <mat-option [value]="5">5+ Guests</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-12 text-center">
+                      <button mat-raised-button color="primary" type="submit" class="search-btn">
+                        <mat-icon>search</mat-icon> Search Hotels
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </mat-tab>
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <mat-icon class="me-2">flight</mat-icon>
+                Flights
+              </ng-template>
+              <div class="p-4">
+                <form>
+                  <div class="row g-3">
+                    <div class="col-md-3">
+                      <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>From</mat-label>
+                        <input matInput placeholder="Departure City">
+                        <mat-icon matSuffix>flight_takeoff</mat-icon>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-3">
+                      <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>To</mat-label>
+                        <input matInput placeholder="Arrival City">
+                        <mat-icon matSuffix>flight_land</mat-icon>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-3">
+                      <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Departure</mat-label>
+                        <input matInput [matDatepicker]="departurePicker">
+                        <mat-datepicker-toggle matSuffix [for]="departurePicker"></mat-datepicker-toggle>
+                        <mat-datepicker #departurePicker></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-3">
+                      <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Return</mat-label>
+                        <input matInput [matDatepicker]="returnPicker">
+                        <mat-datepicker-toggle matSuffix [for]="returnPicker"></mat-datepicker-toggle>
+                        <mat-datepicker #returnPicker></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-12 text-center">
+                      <button mat-raised-button color="primary" type="submit" class="search-btn">
+                        <mat-icon>search</mat-icon> Search Flights
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </mat-tab>
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <mat-icon class="me-2">train</mat-icon>
+                Trains
+              </ng-template>
+              <div class="p-4">
+                <form>
+                  <div class="row g-3">
+                    <div class="col-md-3">
+                      <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>From</mat-label>
+                        <input matInput placeholder="Departure Station">
+                        <mat-icon matSuffix>location_on</mat-icon>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-3">
+                      <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>To</mat-label>
+                        <input matInput placeholder="Arrival Station">
+                        <mat-icon matSuffix>location_on</mat-icon>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-3">
+                      <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Date</mat-label>
+                        <input matInput [matDatepicker]="trainDatePicker">
+                        <mat-datepicker-toggle matSuffix [for]="trainDatePicker"></mat-datepicker-toggle>
+                        <mat-datepicker #trainDatePicker></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-3">
+                      <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Passengers</mat-label>
+                        <mat-select>
+                          <mat-option [value]="1">1 Passenger</mat-option>
+                          <mat-option [value]="2">2 Passengers</mat-option>
+                          <mat-option [value]="3">3 Passengers</mat-option>
+                          <mat-option [value]="4">4+ Passengers</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-12 text-center">
+                      <button mat-raised-button color="primary" type="submit" class="search-btn">
+                        <mat-icon>search</mat-icon> Search Trains
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </mat-tab>
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <mat-icon class="me-2">local_taxi</mat-icon>
+                Cabs
+              </ng-template>
+              <div class="p-4">
+                <form>
+                  <div class="row g-3">
+                    <div class="col-md-4">
+                      <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Pickup Location</mat-label>
+                        <input matInput placeholder="Enter pickup address">
+                        <mat-icon matSuffix>location_on</mat-icon>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                      <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Destination</mat-label>
+                        <input matInput placeholder="Enter destination">
+                        <mat-icon matSuffix>location_on</mat-icon>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                      <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Date & Time</mat-label>
+                        <input matInput [matDatepicker]="cabDatePicker" placeholder="Choose date">
+                        <mat-datepicker-toggle matSuffix [for]="cabDatePicker"></mat-datepicker-toggle>
+                        <mat-datepicker #cabDatePicker></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-12 text-center">
+                      <button mat-raised-button color="primary" type="submit" class="search-btn">
+                        <mat-icon>search</mat-icon> Find Cabs
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Hotels Section -->
+<section class="featured-section">
+  <div class="container">
+    <h2 class="section-title">Featured Hotels</h2>
+    <p class="section-subtitle">Handpicked accommodations for your perfect stay</p>
+    
+    <div class="row g-4">
+      <div class="col-md-3" *ngFor="let hotel of featuredHotels">
+        <mat-card class="h-100 listing-card">
+          <img mat-card-image [src]="hotel.image" [alt]="hotel.name" class="card-img">
+          <mat-card-content>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h3 class="mb-0">{{hotel.name}}</h3>
+              <span class="rating">
+                <mat-icon class="star-icon">star</mat-icon> {{hotel.rating}}
+              </span>
+            </div>
+            <p class="location">
+              <mat-icon>location_on</mat-icon> {{hotel.location}}
+            </p>
+            <p class="price">${{hotel.price}} <span class="per-night">per night</span></p>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-button color="primary" [routerLink]="['/hotels', hotel.id]">View Details</button>
+            <button mat-raised-button color="accent">Book Now</button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Popular Destinations -->
+<section class="destinations-section">
+  <div class="container">
+    <h2 class="section-title">Popular Destinations</h2>
+    <p class="section-subtitle">Explore top-rated cities around the world</p>
+    
+    <div class="row g-4">
+      <div class="col-md-4 col-lg-2" *ngFor="let destination of popularDestinations">
+        <div class="destination-card">
+          <div class="destination-img">
+            <img [src]="destination.image" [alt]="destination.name" class="img-fluid rounded">
+            <div class="destination-overlay">
+              <h3>{{destination.name}}</h3>
+              <p>{{destination.hotels}} Hotels</p>
+              <button mat-stroked-button color="primary" [routerLink]="['/hotels']" [queryParams]="{city: destination.name}">Explore</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Special Offers -->
+<section class="offers-section">
+  <div class="container">
+    <h2 class="section-title">Special Offers</h2>
+    <p class="section-subtitle">Limited time deals you don't want to miss</p>
+    
+    <div class="row g-4">
+      <div class="col-md-4" *ngFor="let offer of specialOffers">
+        <mat-card class="offer-card h-100">
+          <mat-card-header>
+            <mat-card-title>{{offer.title}}</mat-card-title>
+            <mat-card-subtitle>Valid until: {{offer.validUntil}}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="discount-badge">{{offer.discount}}</div>
+            <p>{{offer.description}}</p>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-raised-button color="accent">View Deal</button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Flights -->
+<section class="featured-section">
+  <div class="container">
+    <h2 class="section-title">Featured Flights</h2>
+    <p class="section-subtitle">Best deals on popular routes</p>
+    
+    <div class="row">
+      <div class="col-12">
+        <mat-card>
+          <table class="table flight-table">
+            <thead>
+              <tr>
+                <th>Route</th>
+                <th>Airline</th>
+                <th>Departure</th>
+                <th>Arrival</th>
+                <th>Price</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let flight of featuredFlights">
+                <td>
+                  <div class="route">
+                    <span class="from">{{flight.from}}</span>
+                    <mat-icon>arrow_forward</mat-icon>
+                    <span class="to">{{flight.to}}</span>
+                  </div>
+                </td>
+                <td>{{flight.airline}}</td>
+                <td>{{flight.departure}}</td>
+                <td>{{flight.arrival}}</td>
+                <td class="price">${{flight.price}}</td>
+                <td>
+                  <button mat-raised-button color="primary" [routerLink]="['/flights', flight.id]">Book</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Newsletter -->
+<section class="newsletter-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 offset-md-2 text-center">
+        <h2 class="section-title">Get Travel Deals & Updates</h2>
+        <p class="mb-4">Subscribe to our newsletter and never miss our special offers</p>
+        <div class="input-group mb-3">
+          <input type="email" class="form-control" placeholder="Your Email Address">
+          <button mat-raised-button color="primary">Subscribe</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
